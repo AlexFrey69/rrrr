@@ -1,0 +1,67 @@
+<Window x:Class="PhoneBook.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Телефонная книга" Height="500" Width="900">
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Файл">
+                <MenuItem Header="Экспорт в TXT" Command="{Binding ExportCommand}"/>
+                <Separator/>
+                <MenuItem Header="Выход" Click="Exit_Click"/>
+            </MenuItem>
+        </Menu>
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem Content="{Binding StatusMessage}"/>
+            <Separator/>
+            <StatusBarItem Content="{Binding Contacts.Count, StringFormat='Всего: {0}'}"/>
+        </StatusBar>
+
+        <Grid Margin="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- ЛЕВАЯ ЧАСТЬ: Таблица -->
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Width="200"/>
+                    <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategoryFilter}" Width="100" Margin="5,0"/>
+                </StackPanel>
+                <DataGrid Grid.Row="1" ItemsSource="{Binding FilteredContacts}" SelectedItem="{Binding SelectedContact}" AutoGenerateColumns="False" IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="ФИО" Binding="{Binding FullName}"/>
+                        <DataGridTextColumn Header="Телефон" Binding="{Binding PhoneNumber}"/>
+                        <DataGridTextColumn Header="Email" Binding="{Binding Email}"/>
+                        <DataGridTextColumn Header="Категория" Binding="{Binding Category}"/>
+                        <DataGridTextColumn Header="Создан" Binding="{Binding CreatedAt, StringFormat=d}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
+            <!-- ПРАВАЯ ЧАСТЬ: Форма -->
+            <Border Grid.Column="1" Margin="10,0,0,0" Padding="10" Background="#F5F5F5">
+                <StackPanel>
+                    <TextBlock Text="ФИО"/>
+                    <TextBox Text="{Binding CurrentContact.FullName, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="Телефон" Margin="0,5,0,0"/>
+                    <TextBox Text="{Binding CurrentContact.PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="Email" Margin="0,5,0,0"/>
+                    <TextBox Text="{Binding CurrentContact.Email, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Text="Категория" Margin="0,5,0,0"/>
+                    <ComboBox ItemsSource="{Binding Categories}" SelectedItem="{Binding CurrentContact.Category}" DisplayMemberPath="."/>
+                    
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,0">
+                        <Button Content="Сохранить" Command="{Binding SaveCommand}" Width="75" Margin="5"/>
+                        <Button Content="Отмена" Command="{Binding CancelCommand}" Width="75" Margin="5"/>
+                        <Button Content="Удалить" Command="{Binding DeleteCommand}" Width="75" Margin="5"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>
